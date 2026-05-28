@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-dark: #9A7A30;
+  --teal: #0AAFAA;
+  --teal-dark: #078A86;
+  --black: #080808;
+  --black-soft: #111111;
+  --black-card: #161616;
+  --white: #F5F5F5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-teal: var(--teal);
+  --color-teal-dark: var(--teal-dark);
+  --color-black: var(--black);
+  --color-black-soft: var(--black-soft);
+  --color-black-card: var(--black-card);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* 3D Crest Rotation */
+@keyframes crestRotate {
+  0% { transform: perspective(1000px) rotateY(0deg); }
+  100% { transform: perspective(1000px) rotateY(360deg); }
+}
+
+@keyframes crestFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(201, 168, 76, 0.4), 0 0 60px rgba(201, 168, 76, 0.2); }
+  50% { box-shadow: 0 0 50px rgba(201, 168, 76, 0.7), 0 0 100px rgba(201, 168, 76, 0.35), 0 0 140px rgba(10, 175, 170, 0.2); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(201, 168, 76, 0.4); }
+  50% { border-color: rgba(201, 168, 76, 0.9); }
+}
+
+.crest-rotate {
+  animation: crestRotate 10s linear infinite;
+  transform-style: preserve-3d;
+}
+
+.crest-float {
+  animation: crestFloat 4s ease-in-out infinite;
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--gold-dark) 0%,
+    var(--gold-light) 30%,
+    #fff 50%,
+    var(--gold-light) 70%,
+    var(--gold-dark) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+.border-glow {
+  animation: borderGlow 2.5s ease-in-out infinite;
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+}
+
+.glass-card {
+  background: rgba(22, 22, 22, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.5), transparent);
 }
