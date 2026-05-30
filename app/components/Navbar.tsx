@@ -2,15 +2,19 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../lib/translations";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, setLang } = useLanguage();
+  const t = translations[lang].nav;
 
   const links = [
-    { label: "Misión", href: "#mision" },
-    { label: "Fundadores", href: "#fundadores" },
-    { label: "PasalaPro", href: "#pasalapro" },
-    { label: "Patrocinadores", href: "#patrocinadores" },
+    { label: t.mission, href: "#mision" },
+    { label: t.founders, href: "#fundadores" },
+    { label: t.pasalapro, href: "#pasalapro" },
+    { label: t.sponsors, href: "#patrocinadores" },
   ];
 
   return (
@@ -49,39 +53,73 @@ export default function Navbar() {
               href="#fundadores"
               className="px-5 py-2 text-sm font-bold tracking-wider uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-colors"
             >
-              Edición Fundadores
+              {t.founderEdition}
             </a>
+
+            {/* Language switcher */}
+            <div className="flex items-center gap-1 border border-[#F5F5F5]/15 rounded px-1 py-0.5">
+              <button
+                onClick={() => setLang("en")}
+                className={`text-xs font-bold tracking-wider px-2 py-1 rounded transition-colors ${
+                  lang === "en"
+                    ? "text-[#C9A84C] bg-[#C9A84C]/15"
+                    : "text-[#F5F5F5]/40 hover:text-[#F5F5F5]/70"
+                }`}
+              >
+                EN
+              </button>
+              <span className="text-[#F5F5F5]/20 text-xs">|</span>
+              <button
+                onClick={() => setLang("es")}
+                className={`text-xs font-bold tracking-wider px-2 py-1 rounded transition-colors ${
+                  lang === "es"
+                    ? "text-[#C9A84C] bg-[#C9A84C]/15"
+                    : "text-[#F5F5F5]/40 hover:text-[#F5F5F5]/70"
+                }`}
+              >
+                ES
+              </button>
+            </div>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden text-[#F5F5F5] p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menú"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {/* Mobile right side */}
+          <div className="flex items-center gap-3 md:hidden">
+            {/* Mobile language switcher */}
+            <div className="flex items-center gap-0.5 border border-[#F5F5F5]/15 rounded px-1 py-0.5">
+              <button
+                onClick={() => setLang("en")}
+                className={`text-xs font-bold px-1.5 py-0.5 rounded transition-colors ${
+                  lang === "en" ? "text-[#C9A84C]" : "text-[#F5F5F5]/40"
+                }`}
+              >
+                EN
+              </button>
+              <span className="text-[#F5F5F5]/20 text-xs">|</span>
+              <button
+                onClick={() => setLang("es")}
+                className={`text-xs font-bold px-1.5 py-0.5 rounded transition-colors ${
+                  lang === "es" ? "text-[#C9A84C]" : "text-[#F5F5F5]/40"
+                }`}
+              >
+                ES
+              </button>
+            </div>
+
+            {/* Hamburger */}
+            <button
+              className="text-[#F5F5F5] p-2"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Menu"
             >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -102,7 +140,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               className="mx-2 px-5 py-2 text-sm font-bold tracking-wider uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-colors text-center"
             >
-              Edición Fundadores
+              {t.founderEdition}
             </a>
           </div>
         )}

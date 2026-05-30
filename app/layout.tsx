@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "./context/LanguageContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -8,8 +9,11 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://harpiafc.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://harpiafc.com"),
+  metadataBase: new URL(siteUrl),
   title: "Harpia FC — Un Club. Una Comunidad. Un Movimiento.",
   description:
     "Harpia FC es un movimiento de fútbol salvadoreño moderno impulsado por PasalaPro. Únete a la Edición Fundadores — limitada a 1,000 jerseys.",
@@ -56,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#080808] text-[#F5F5F5]">
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

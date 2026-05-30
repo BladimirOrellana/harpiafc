@@ -1,6 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "../context/LanguageContext";
+import { translations } from "../lib/translations";
 
 export default function Footer() {
+  const { lang } = useLanguage();
+  const t = translations[lang].footer;
   const currentYear = new Date().getFullYear();
 
   return (
@@ -21,22 +27,17 @@ export default function Footer() {
                 />
               </div>
               <div>
-                <div className="text-xl font-black tracking-widest text-[#C9A84C]">
-                  HARPIA FC
-                </div>
-                <div className="text-xs text-[#F5F5F5]/30 tracking-wider">
-                  El Salvador
-                </div>
+                <div className="text-xl font-black tracking-widest text-[#C9A84C]">HARPIA FC</div>
+                <div className="text-xs text-[#F5F5F5]/30 tracking-wider">El Salvador</div>
               </div>
             </div>
             <p className="text-sm text-[#F5F5F5]/40 leading-relaxed max-w-sm mb-6">
-              Un club. Una comunidad. Un movimiento. El futuro del fútbol
-              salvadoreño empieza desde cero.
+              {t.tagline}
             </p>
             <div className="flex items-center gap-2 px-4 py-2 bg-[#0AAFAA]/10 border border-[#0AAFAA]/20 rounded-lg w-fit">
               <div className="w-1.5 h-1.5 bg-[#0AAFAA] rounded-full animate-pulse" />
               <span className="text-xs text-[#0AAFAA] font-semibold tracking-wider">
-                Impulsado por PasalaPro
+                {t.poweredBy}
               </span>
             </div>
           </div>
@@ -44,16 +45,10 @@ export default function Footer() {
           {/* Links */}
           <div>
             <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-[#F5F5F5]/30 mb-5">
-              Navegación
+              {t.navTitle}
             </h4>
             <ul className="space-y-3">
-              {[
-                { label: "Inicio", href: "#" },
-                { label: "Misión", href: "#mision" },
-                { label: "Edición Fundadores", href: "#fundadores" },
-                { label: "PasalaPro", href: "#pasalapro" },
-                { label: "Patrocinadores", href: "#patrocinadores" },
-              ].map((link) => (
+              {t.navLinks.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
@@ -69,23 +64,15 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-[#F5F5F5]/30 mb-5">
-              Contacto
+              {t.contactTitle}
             </h4>
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:hola@harpiafc.com"
+                  href="mailto:info@pasalapro.com"
                   className="text-sm text-[#F5F5F5]/50 hover:text-[#C9A84C] transition-colors"
                 >
-                  hola@harpiafc.com
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:patrocinios@harpiafc.com"
-                  className="text-sm text-[#F5F5F5]/50 hover:text-[#C9A84C] transition-colors"
-                >
-                  patrocinios@harpiafc.com
+                  info@pasalapro.com
                 </a>
               </li>
               <li className="text-sm text-[#F5F5F5]/30">El Salvador, C.A.</li>
@@ -123,13 +110,11 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[#F5F5F5]/20 tracking-wide">
-            © {currentYear} Harpia FC. Todos los derechos reservados.
+            © {currentYear} Harpia FC. {t.copyright}
           </p>
           <div className="flex items-center gap-2 text-xs text-[#F5F5F5]/20">
-            <span>Tecnología by</span>
-            <span className="text-[#0AAFAA] font-bold tracking-wider">
-              PasalaPro
-            </span>
+            <span>{t.techBy}</span>
+            <span className="text-[#0AAFAA] font-bold tracking-wider">PasalaPro</span>
           </div>
         </div>
       </div>
