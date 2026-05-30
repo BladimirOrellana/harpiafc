@@ -59,7 +59,7 @@ export default function CtaSection() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <a
-            href="https://pasalapro.com/shops/harpia"
+            href="https://pasalapro.com/shops/harpia/founders"
             target="_blank"
             rel="noopener noreferrer"
             className="px-10 py-5 text-base font-black tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(201,168,76,0.6)]"
@@ -67,8 +67,10 @@ export default function CtaSection() {
             {t.btnReserve}
           </a>
           <a
-            href="mailto:info@pasalapro.com?subject=Harpia%20FC%20-%20Contacto"
-            className="px-10 py-5 text-base font-bold tracking-widest uppercase border border-[#F5F5F5]/20 text-[#F5F5F5]/70 rounded hover:border-[#F5F5F5]/50 hover:text-[#F5F5F5] transition-all duration-300"
+            href="https://pasalapro.com/shops/harpia/founders/registry"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-10 py-5 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/40 text-[#C9A84C]/80 rounded hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all duration-300"
           >
             {t.btnContact}
           </a>

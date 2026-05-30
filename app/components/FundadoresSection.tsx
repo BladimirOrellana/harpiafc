@@ -26,10 +26,17 @@ export default function FundadoresSection() {
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#F5F5F5] mb-4">
             {t.title}
           </h2>
-          <div className="inline-block px-6 py-2 border border-[#C9A84C]/50 rounded-full mb-6">
-            <span className="text-[#C9A84C] font-bold tracking-widest text-sm uppercase">
-              {t.subtitle}
-            </span>
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+            <div className="px-6 py-2 border border-[#C9A84C]/50 rounded-full">
+              <span className="text-[#C9A84C] font-bold tracking-widest text-sm uppercase">
+                {t.internalCta.price}
+              </span>
+            </div>
+            <div className="px-6 py-2 border border-[#F5F5F5]/15 rounded-full">
+              <span className="text-[#F5F5F5]/50 font-semibold tracking-widest text-sm uppercase">
+                {t.subtitle.split(" · ")[1]}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -88,14 +95,24 @@ export default function FundadoresSection() {
               ))}
             </ul>
 
-            <a
-              href="https://pasalapro.com/shops/harpia"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-8 py-4 text-base font-bold tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(201,168,76,0.5)]"
-            >
-              {t.internalCta.button}
-            </a>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a
+                href="https://pasalapro.com/shops/harpia/founders"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 text-base font-bold tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(201,168,76,0.5)] text-center"
+              >
+                {t.internalCta.button}
+              </a>
+              <a
+                href="https://pasalapro.com/shops/harpia/founders/registry"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/60 text-[#C9A84C] rounded hover:bg-[#C9A84C]/10 transition-all duration-300 text-center"
+              >
+                {t.internalCta.secondaryButton}
+              </a>
+            </div>
           </div>
         </div>
 
@@ -216,14 +233,24 @@ export default function FundadoresSection() {
               {t.internalCta.body}
             </p>
 
-            <a
-              href="https://pasalapro.com/shops/harpia"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-10 py-5 text-base font-black tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(201,168,76,0.6)] mb-6"
-            >
-              {t.internalCta.button}
-            </a>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+              <a
+                href="https://pasalapro.com/shops/harpia/founders"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-10 py-5 text-base font-black tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(201,168,76,0.6)]"
+              >
+                {t.internalCta.button}
+              </a>
+              <a
+                href="https://pasalapro.com/shops/harpia/founders/registry"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-10 py-5 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/60 text-[#C9A84C] rounded hover:bg-[#C9A84C]/10 transition-all duration-300"
+              >
+                {t.internalCta.secondaryButton}
+              </a>
+            </div>
 
             <div className="flex flex-col items-center gap-2">
               <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-[#C9A84C]/10 border border-[#C9A84C]/25">
