@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { useGLTF, OrbitControls, Center, Bounds } from "@react-three/drei";
 import * as THREE from "three";
 
 function JerseyGLB() {
   const { scene } = useGLTF("/models/Jersy-3D.glb");
+  const { gl: renderer } = useThree();
 
   useEffect(() => {
     console.log("[Jersey3D] GLB loaded ✓");
@@ -17,23 +18,48 @@ function JerseyGLB() {
     const size = box.getSize(new THREE.Vector3());
     console.log("[Jersey3D] bounding box size:", size);
 
+    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+    console.log("[Jersey3D] GPU max anisotropy:", maxAnisotropy);
+
     scene.traverse((node) => {
       const mesh = node as THREE.Mesh;
       if (!mesh.isMesh) return;
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       mats.forEach((mat) => {
         const m = mat as THREE.MeshStandardMaterial;
-        console.log(
-          `[Jersey3D] mesh="${mesh.name}"`,
-          `type=${m.type}`,
-          `map=${m.map ? "YES" : "MISSING"}`,
-          `color=#${m.color?.getHexString() ?? "?"}`,
-          `roughness=${m.roughness ?? "?"}`,
-          `metalness=${m.metalness ?? "?"}`
-        );
+
+        // Texture slots to inspect and sharpen
+        const slots: [string, THREE.Texture | null | undefined][] = [
+          ["map",          m.map],
+          ["normalMap",    m.normalMap],
+          ["roughnessMap", m.roughnessMap],
+          ["metalnessMap", m.metalnessMap],
+          ["emissiveMap",  m.emissiveMap],
+          ["aoMap",        m.aoMap],
+        ];
+
+        console.group(`[Jersey3D] mesh="${mesh.name}" mat="${m.name}" (${m.type})`);
+        console.log(`  color=#${m.color?.getHexString() ?? "?"} roughness=${m.roughness ?? "?"} metalness=${m.metalness ?? "?"}`);
+
+        slots.forEach(([label, tex]) => {
+          if (!tex) {
+            console.log(`  ${label}: MISSING`);
+            return;
+          }
+          const img = tex.image as HTMLImageElement | ImageBitmap | undefined;
+          const w = img ? ("width" in img ? img.width : "?") : "?";
+          const h = img ? ("height" in img ? img.height : "?") : "?";
+          console.log(`  ${label}: ${w}×${h}px  anisotropy=${tex.anisotropy}→${maxAnisotropy}`);
+
+          // Apply max anisotropy for sharper detail at oblique angles
+          tex.anisotropy = maxAnisotropy;
+          tex.needsUpdate = true;
+        });
+
+        console.groupEnd();
       });
     });
-  }, [scene]);
+  }, [scene, renderer]);
 
   return (
     <Bounds fit clip observe margin={1.2}>
@@ -55,7 +81,7 @@ export default function Jersey3D() {
       <Canvas
         camera={{ position: [0, 1.2, 4], fov: 35 }}
         gl={{ antialias: true, alpha: true }}
-        dpr={[1, 1.5]}
+        dpr={[1, 2]}
         style={{ width: "100%", height: "100%" }}
       >
         <ambientLight intensity={0.8} />
