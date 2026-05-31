@@ -2,61 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import Image from "next/image";
-
-// ─── CSS-only fallback ─────────────────────────────────────────────────────
-// Used when WebGL/Three.js fails to initialize. Still premium and interactive.
-function JerseyCSSFallback() {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        background: "#111111",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        gap: 16,
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          width: 220,
-          height: 254,
-          animation: "cssJerseyFloat 4s ease-in-out infinite",
-          filter: "drop-shadow(0 0 24px rgba(201,168,76,0.35))",
-        }}
-      >
-        <Image
-          src="/harpia-front-t.PNG"
-          alt="Harpia FC Edición Fundadores"
-          fill
-          sizes="220px"
-          className="object-contain"
-          priority
-        />
-      </div>
-      <span
-        style={{
-          fontSize: 10,
-          letterSpacing: "0.25em",
-          textTransform: "uppercase",
-          color: "rgba(201,168,76,0.4)",
-        }}
-      >
-        Edición Fundadores
-      </span>
-      <style>{`
-        @keyframes cssJerseyFloat {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-14px); }
-        }
-      `}</style>
-    </div>
-  );
-}
 
 // ─── Loading spinner ───────────────────────────────────────────────────────
 function Jersey3DLoading() {
@@ -98,26 +43,73 @@ function Jersey3DLoading() {
   );
 }
 
+// ─── Error display — visible so we can read what actually broke ────────────
+function Jersey3DError({ message }: { message: string }) {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#111111",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        gap: 12,
+        padding: 16,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 11,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: "rgba(255,80,80,0.7)",
+        }}
+      >
+        3D model failed to load
+      </span>
+      <span
+        style={{
+          fontSize: 10,
+          color: "rgba(255,80,80,0.45)",
+          textAlign: "center",
+          maxWidth: 260,
+          wordBreak: "break-word",
+          fontFamily: "monospace",
+        }}
+      >
+        {message}
+      </span>
+    </div>
+  );
+}
+
 // ─── Error boundary ────────────────────────────────────────────────────────
 interface EBState {
   hasError: boolean;
+  message: string;
 }
-class WebGLErrorBoundary extends Component<
-  { children: ReactNode },
-  EBState
-> {
+
+class WebGLErrorBoundary extends Component<{ children: ReactNode }, EBState> {
   constructor(props: { children: ReactNode }) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, message: "" };
   }
-  static getDerivedStateFromError(): EBState {
-    return { hasError: true };
+
+  static getDerivedStateFromError(error: Error): EBState {
+    return { hasError: true, message: error?.message ?? String(error) };
   }
+
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.warn("[Jersey3D] WebGL error — CSS fallback active:", error, info);
+    console.error("[Jersey3D] error caught by boundary:", error);
+    console.error("[Jersey3D] component stack:", info.componentStack);
   }
+
   render() {
-    if (this.state.hasError) return <JerseyCSSFallback />;
+    if (this.state.hasError) {
+      return <Jersey3DError message={this.state.message} />;
+    }
     return this.props.children;
   }
 }
@@ -129,7 +121,6 @@ const Jersey3DCanvas = dynamic(() => import("./Jersey3D"), {
 });
 
 // ─── Public export ─────────────────────────────────────────────────────────
-// Outer div must be w-full h-full so it fills the 520px container.
 export default function Jersey3DViewer() {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>

@@ -1,12 +1,51 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Jersey3DViewer from "./Jersey3DViewer";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../lib/translations";
 
+interface RegistryData {
+  total: number;
+  publicStart: number;
+  paid: number;
+  available: number;
+  reserved: number;
+}
+
 export default function FundadoresSection() {
   const { lang } = useLanguage();
   const t = translations[lang].fundadores;
+
+  const [registry, setRegistry] = useState<RegistryData | null>(null);
+
+  useEffect(() => {
+    console.log("[Fundadores] Founder registry fetch started → /api/fundadores/registry");
+    fetch("/api/fundadores/registry")
+      .then((r) => {
+        console.log("[Fundadores] response status:", r.status);
+        return r.json();
+      })
+      .then((data) => {
+        console.log("[Fundadores] parsed JSON:", data);
+
+        const total       = typeof data.total       === "number" ? data.total       : 1000;
+        const publicStart = typeof data.publicStart === "number" ? data.publicStart : 31;
+        const reserved    = typeof data.reserved    === "number" ? data.reserved    : 30;
+        const paid        = typeof data.paid        === "number" ? data.paid        : 0;
+        const available   = typeof data.available   === "number"
+          ? data.available
+          : Math.max(total - reserved - paid, 0);
+
+        const normalized = { total, publicStart, reserved, paid, available };
+        console.log("[Fundadores] normalized stats:", normalized);
+
+        if (data.ok) setRegistry(normalized);
+      })
+      .catch((err) => {
+        console.error("[Fundadores] fetch error:", err);
+      });
+  }, []);
 
   return (
     <section id="fundadores" className="relative py-24 sm:py-32 bg-[#0D0D0D]">
@@ -19,7 +58,7 @@ export default function FundadoresSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── HEADER ── */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <span className="inline-block text-xs font-bold tracking-[0.3em] uppercase text-[#C9A84C] mb-4">
             {t.sectionLabel}
           </span>
@@ -40,6 +79,40 @@ export default function FundadoresSection() {
           </div>
         </div>
 
+        {/* ── LIVE STATS ── */}
+        <div className="grid grid-cols-3 gap-4 mb-16 max-w-2xl mx-auto">
+          {/* Total */}
+          <div className="glass-card rounded-xl p-5 text-center border border-[#C9A84C]/20 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: "linear-gradient(90deg, transparent, #C9A84C, transparent)" }} />
+            <div className="text-3xl font-black text-[#F5F5F5] font-mono">
+              1,000
+            </div>
+            <div className="text-[10px] text-[#F5F5F5]/40 uppercase tracking-[0.2em] mt-1">
+              {lang === "es" ? "Ediciones" : "Editions"}
+            </div>
+          </div>
+          {/* Vendidas */}
+          <div className="glass-card rounded-xl p-5 text-center border border-[#C9A84C]/20 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: "linear-gradient(90deg, transparent, #C9A84C, transparent)" }} />
+            <div className="text-3xl font-black text-[#C9A84C] font-mono">
+              {registry !== null ? registry.paid : "—"}
+            </div>
+            <div className="text-[10px] text-[#F5F5F5]/40 uppercase tracking-[0.2em] mt-1">
+              {lang === "es" ? "Vendidas" : "Sold"}
+            </div>
+          </div>
+          {/* Disponibles */}
+          <div className="glass-card rounded-xl p-5 text-center border border-[#4ADE80]/20 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: "linear-gradient(90deg, transparent, #4ADE80, transparent)" }} />
+            <div className="text-3xl font-black font-mono" style={{ color: "#4ADE80" }}>
+              {registry !== null ? registry.available : "—"}
+            </div>
+            <div className="text-[10px] text-[#F5F5F5]/40 uppercase tracking-[0.2em] mt-1">
+              {lang === "es" ? "Disponibles" : "Available"}
+            </div>
+          </div>
+        </div>
+
         {/* ── 3D VIEWER + MAIN COPY ── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
           {/* 3D Jersey */}
@@ -56,7 +129,9 @@ export default function FundadoresSection() {
                 <div className="inline-flex items-center gap-3 px-5 py-3 bg-[#C9A84C]/10 rounded-full border border-[#C9A84C]/30">
                   <div className="w-2 h-2 bg-[#C9A84C] rounded-full animate-pulse" />
                   <span className="text-sm font-bold text-[#C9A84C] tracking-widest">
-                    No. 0031 / 1000
+                    {registry
+                      ? `Próximo: #${String((registry.publicStart + registry.paid)).padStart(4, "0")} / 1,000`
+                      : "No. 0031 / 1,000"}
                   </span>
                   <div className="w-2 h-2 bg-[#C9A84C] rounded-full animate-pulse" />
                 </div>
