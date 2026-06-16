@@ -5,7 +5,15 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 
-const UPSTREAM = "https://pasalapro.com/api/harpia/founders/registry";
+// Resolve upstream URL:
+// 1. Explicit env var (set per-environment in Vercel project settings)
+// 2. VERCEL_ENV === "production" → live PasalaPro
+// 3. Anything else (preview, dev) → preview PasalaPro branch
+const UPSTREAM =
+  process.env.PASALAPRO_REGISTRY_API_URL ??
+  (process.env.VERCEL_ENV === "production"
+    ? "https://pasalapro.com/api/harpia/founders/registry"
+    : "https://pasalapro-git-dev-bladimirs-projects-10100b21.vercel.app/api/harpia/founders/registry");
 
 // Safe public fields only — no buyer PII, no Stripe IDs, no Firebase UIDs
 const SAFE_FIELDS = ["ok", "total", "publicStart", "reserved", "paid", "available", "entries"] as const;

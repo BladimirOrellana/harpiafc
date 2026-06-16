@@ -172,9 +172,7 @@ export default function FundadoresSection() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="https://pasalapro.com/shops/harpia/founders"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/founders"
                 className="px-8 py-4 text-base font-bold tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(201,168,76,0.5)] text-center"
               >
                 {t.internalCta.button}
@@ -310,9 +308,7 @@ export default function FundadoresSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <a
-                href="https://pasalapro.com/shops/harpia/founders"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/founders"
                 className="px-10 py-5 text-base font-black tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(201,168,76,0.6)]"
               >
                 {t.internalCta.button}
