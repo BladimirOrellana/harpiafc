@@ -178,9 +178,7 @@ export default function FundadoresSection() {
                 {t.internalCta.button}
               </a>
               <a
-                href="https://pasalapro.com/shops/harpia/founders/registry"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/founders/registry"
                 className="px-8 py-4 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/60 text-[#C9A84C] rounded hover:bg-[#C9A84C]/10 transition-all duration-300 text-center"
               >
                 {t.internalCta.secondaryButton}
@@ -314,9 +312,7 @@ export default function FundadoresSection() {
                 {t.internalCta.button}
               </a>
               <a
-                href="https://pasalapro.com/shops/harpia/founders/registry"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/founders/registry"
                 className="px-10 py-5 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/60 text-[#C9A84C] rounded hover:bg-[#C9A84C]/10 transition-all duration-300"
               >
                 {t.internalCta.secondaryButton}

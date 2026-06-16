@@ -67,9 +67,7 @@ export default function CtaSection() {
             {t.btnReserve}
           </a>
           <a
-            href="https://pasalapro.com/shops/harpia/founders/registry"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/founders/registry"
             className="px-10 py-5 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/40 text-[#C9A84C]/80 rounded hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all duration-300"
           >
             {t.btnContact}

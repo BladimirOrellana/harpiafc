@@ -229,7 +229,7 @@ function SuccessInner() {
       {/* Actions */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Link
-          href="/#fundadores"
+          href="/founders/registry"
           style={{
             display: "block",
             padding: "14px 20px",
