@@ -169,7 +169,7 @@ export default function FoundersCheckoutPage() {
           {t.price}
         </p>
         <p style={{ color: "#888", fontSize: 13, marginBottom: 32 }}>
-          {form.paymentPlan === "full" ? t.priceNote : t.installmentsNote}
+          {t.priceNote}
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -292,6 +292,8 @@ export default function FoundersCheckoutPage() {
           </Section>
 
           {/* ── Payment plan ───────────────────────────────────────────── */}
+          {/* HIDDEN FOR LAUNCH: installments UI disabled. paymentPlan is always "full".
+              Re-enable by uncommenting the <Section> block below and removing this comment.
           <Section>
             <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", color: "#888", marginBottom: 12, textTransform: "uppercase" }}>
               {t.fields.paymentPlan}
@@ -352,6 +354,7 @@ export default function FoundersCheckoutPage() {
               </Field>
             )}
           </Section>
+          */}
 
           {/* ── Terms ──────────────────────────────────────────────────── */}
           <div style={{ marginBottom: 28 }}>
