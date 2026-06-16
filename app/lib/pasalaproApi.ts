@@ -1,9 +1,21 @@
 // Typed wrapper for PasalaPro API calls.
 // All requests go to NEXT_PUBLIC_PASALAPRO_API_URL (no Stripe keys here).
+//
+// NEXT_PUBLIC_PASALAPRO_API_URL must be set per environment in Vercel:
+//   Production : https://pasalapro.com
+//   Preview    : https://pasalapro-git-dev-bladimirs-projects-10100b21.vercel.app
+//   Local dev  : http://localhost:3000
 
-const BASE = (
-  process.env.NEXT_PUBLIC_PASALAPRO_API_URL ?? "http://localhost:3000"
-).replace(/\/$/, "");
+function getBase(): string {
+  const raw = process.env.NEXT_PUBLIC_PASALAPRO_API_URL;
+  if (!raw) {
+    throw new Error(
+      "NEXT_PUBLIC_PASALAPRO_API_URL is not configured. " +
+      "Set it in .env.local (local dev) or Vercel project settings (preview/production)."
+    );
+  }
+  return raw.replace(/\/$/, "");
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -83,7 +95,7 @@ async function apiFetch<T>(
   path: string,
   init?: RequestInit
 ): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${getBase()}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",

@@ -5,22 +5,34 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 
-// Resolve upstream URL:
-// 1. Explicit env var (set per-environment in Vercel project settings)
-// 2. VERCEL_ENV === "production" → live PasalaPro
-// 3. Anything else (preview, dev) → preview PasalaPro branch
-// const UPSTREAM =
-//   process.env.PASALAPRO_REGISTRY_API_URL ??
-//   (process.env.VERCEL_ENV === "production"
-//     ? "https://pasalapro.com/api/harpia/founders/registry"
-//     : "https://pasalapro-git-dev-bladimirs-projects-10100b21.vercel.app/api/harpia/founders/registry");
-const UPSTREAM =
-  process.env.PASALAPRO_REGISTRY_API_URL = "https://pasalapro-git-dev-bladimirs-projects-10100b21.vercel.app/api/harpia/founders/registry";
+// Resolve upstream URL — env vars only, no hardcoded URLs:
+//   1. PASALAPRO_REGISTRY_API_URL          (explicit full URL, highest priority)
+//   2. NEXT_PUBLIC_PASALAPRO_API_URL        (derive registry path from base URL)
+//   3. Neither set → return 500 with clear error message
+function resolveUpstream(): string | null {
+  const explicit = process.env.PASALAPRO_REGISTRY_API_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+
+  const base = process.env.NEXT_PUBLIC_PASALAPRO_API_URL;
+  if (base) return `${base.replace(/\/$/, "")}/api/harpia/founders/registry`;
+
+  return null;
+}
 
 // Safe public fields only — no buyer PII, no Stripe IDs, no Firebase UIDs
 const SAFE_FIELDS = ["ok", "total", "publicStart", "reserved", "paid", "available", "entries"] as const;
 
 export async function GET() {
+  const UPSTREAM = resolveUpstream();
+
+  if (!UPSTREAM) {
+    console.error("[Harpia proxy] PasalaPro registry API URL is not configured");
+    return NextResponse.json(
+      { ok: false, error: "PasalaPro registry API URL is not configured" },
+      { status: 500 }
+    );
+  }
+
   try {
     console.log("[Harpia proxy] fetching upstream:", UPSTREAM);
 
