@@ -50,8 +50,8 @@ export const translations = {
       title: "Founder Edition Reservation",
       subtitle: "$250 USD · Limited to 1,000 Founder Editions",
       mainCopy: [
-        "This is not a merchandise purchase.",
-        "It is an official Founder Edition Reservation — created for those who believe in the birth of Harpia FC from day one.",
+        "Reserve your place in Harpia FC history.",
+        "The official Founder Edition is limited, numbered, and created for those who believe from day one.",
         "Each reservation secures your permanent place in the Official Harpia FC Founder Registry, along with a collectible Founder Edition accompanied by a laser-engraved metal Certificate of Authenticity.",
         "The number on your certificate matches the number on your jersey — making it a unique, authenticated piece in the history of the club.",
         "Once all 1,000 numbers have been reserved, the Founder Collection will be permanently closed. There will never be a second Founder Edition.",
@@ -140,13 +140,13 @@ export const translations = {
     },
     patrocinadores: {
       tag: "Sponsorship opportunities",
-      headlineA: "Be the first to",
-      headlineB: "bet",
-      headlineC: "on us",
+      headlineA: "Support",
+      headlineB: "Harpia FC",
+      headlineC: "",
       body: "Sponsoring Harpia FC at this foundational stage is more than brand visibility — it's being part of a historic movement for Salvadoran football. The brands that come first will always be remembered.",
       tiers: [
         {
-          name: "Gold Founder",
+          name: "Gold Sponsor",
           perks: [
             "Logo on the official jersey",
             "Presence across all digital channels",
@@ -174,7 +174,7 @@ export const translations = {
         },
       ],
       note: "Packages are customizable. Contact the team for details.",
-      cta: "I want to sponsor",
+      cta: "Sponsor Harpia FC",
     },
     cta: {
       headlineA: "Become part of the",
@@ -318,8 +318,8 @@ export const translations = {
       title: "Reserva de Edición Fundadores",
       subtitle: "$250 USD · Limitada a 1,000 Ediciones Fundadores",
       mainCopy: [
-        "Esto no es una compra de mercancía.",
-        "Es una Reserva oficial de Edición Fundadores — creada para quienes creen en el nacimiento de Harpia FC desde el primer día.",
+        "Reserva tu lugar en la historia de Harpia FC.",
+        "La Edición Fundadores oficial es limitada, numerada, y creada para quienes creen desde el primer día.",
         "Cada reserva asegura tu lugar permanente en el Registro Oficial de Fundadores de Harpia FC, junto con una Edición Fundadores coleccionable acompañada de un Certificado de Autenticidad metálico grabado con láser.",
         "El número en tu certificado coincide con el número en tu jersey — convirtiéndola en una pieza única y autenticada en la historia del club.",
         "Una vez que los 1,000 números sean reservados, la Colección Fundadores quedará cerrada permanentemente. No habrá una segunda Edición Fundadores.",
@@ -408,13 +408,13 @@ export const translations = {
     },
     patrocinadores: {
       tag: "Oportunidades de patrocinio",
-      headlineA: "Sé el primero en",
-      headlineB: "apostar",
-      headlineC: "por nosotros",
+      headlineA: "Apoya",
+      headlineB: "Harpia FC",
+      headlineC: "",
       body: "Patrocinar Harpia FC en esta etapa fundacional es más que visibilidad de marca — es ser parte de un movimiento histórico para el fútbol salvadoreño. Las marcas que entren primero, serán recordadas siempre.",
       tiers: [
         {
-          name: "Fundador de Oro",
+          name: "Patrocinador Oro",
           perks: [
             "Logo en el jersey oficial",
             "Presencia en todos los canales digitales",
@@ -442,7 +442,7 @@ export const translations = {
         },
       ],
       note: "Los paquetes son personalizables. Contacta al equipo para más detalles.",
-      cta: "Quiero patrocinar",
+      cta: "Patrocinar Harpia FC",
     },
     cta: {
       headlineA: "Sé parte del",
