@@ -50,7 +50,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#fundadores"
+              href="/founders"
               className="px-5 py-2 text-sm font-bold tracking-wider uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-colors"
             >
               {t.founderEdition}
@@ -136,7 +136,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#fundadores"
+              href="/founders"
               onClick={() => setMenuOpen(false)}
               className="mx-2 px-5 py-2 text-sm font-bold tracking-wider uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-colors text-center"
             >

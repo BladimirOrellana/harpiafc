@@ -12,17 +12,8 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080808] pt-16">
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#C9A84C]/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#0AAFAA]/5 rounded-full blur-[100px]" />
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#C9A84C]/4 rounded-full blur-[80px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(201,168,76,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.5) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#C9A84C]/5 rounded-full blur-[130px]" />
+        <div className="absolute bottom-0 left-0 w-[350px] h-[350px] bg-[#0AAFAA]/4 rounded-full blur-[110px]" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -50,39 +41,17 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <a
-                href="#mision"
+                href="/founders"
                 className="px-8 py-4 text-base font-bold tracking-widest uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(201,168,76,0.5)] text-center"
               >
                 {t.cta1}
               </a>
               <a
-                href="#fundadores"
+                href="/founders/registry"
                 className="px-8 py-4 text-base font-bold tracking-widest uppercase border border-[#C9A84C]/60 text-[#C9A84C] rounded hover:bg-[#C9A84C]/10 transition-all duration-300 text-center"
               >
                 {t.cta2}
               </a>
-            </div>
-
-            {/* Stats */}
-            <div className="mt-16 grid grid-cols-3 gap-6 pt-10 border-t border-[#F5F5F5]/10">
-              <div>
-                <div className="text-3xl font-black text-[#C9A84C]">1,000</div>
-                <div className="text-xs text-[#F5F5F5]/40 uppercase tracking-wider mt-1">
-                  {t.stat1Label}
-                </div>
-              </div>
-              <div>
-                <div className="text-3xl font-black text-[#C9A84C]">SV</div>
-                <div className="text-xs text-[#F5F5F5]/40 uppercase tracking-wider mt-1">
-                  {t.stat2Label}
-                </div>
-              </div>
-              <div>
-                <div className="text-3xl font-black text-[#0AAFAA]">Pro</div>
-                <div className="text-xs text-[#F5F5F5]/40 uppercase tracking-wider mt-1">
-                  {t.stat3Label}<span className="text-[#0AAFAA]">Pro</span>
-                </div>
-              </div>
             </div>
           </div>
 

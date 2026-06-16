@@ -79,21 +79,6 @@ export default function PasalaProSection() {
           </div>
         </div>
 
-        {/* Feature grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {t.features.map((feature, i) => (
-            <div
-              key={i}
-              className="glass-card rounded-xl p-6 border border-[#0AAFAA]/15 hover:border-[#0AAFAA]/40 transition-all duration-300 group"
-            >
-              <div className="text-[#0AAFAA] mb-4 group-hover:scale-110 transition-transform duration-300 w-fit">
-                {featureIcons[i]}
-              </div>
-              <h4 className="font-bold text-[#F5F5F5] mb-2">{feature.title}</h4>
-              <p className="text-sm text-[#F5F5F5]/40 leading-relaxed">{feature.desc}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

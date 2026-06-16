@@ -10,53 +10,18 @@ function JerseyGLB() {
   const { gl: renderer } = useThree();
 
   useEffect(() => {
-    console.log("[Jersey3D] GLB loaded ✓");
-    console.log("[Jersey3D] scene:", scene);
-    console.log("[Jersey3D] children count:", scene.children.length);
-
-    const box = new THREE.Box3().setFromObject(scene);
-    const size = box.getSize(new THREE.Vector3());
-    console.log("[Jersey3D] bounding box size:", size);
-
     const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
-    console.log("[Jersey3D] GPU max anisotropy:", maxAnisotropy);
-
     scene.traverse((node) => {
       const mesh = node as THREE.Mesh;
       if (!mesh.isMesh) return;
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       mats.forEach((mat) => {
         const m = mat as THREE.MeshStandardMaterial;
-
-        // Texture slots to inspect and sharpen
-        const slots: [string, THREE.Texture | null | undefined][] = [
-          ["map",          m.map],
-          ["normalMap",    m.normalMap],
-          ["roughnessMap", m.roughnessMap],
-          ["metalnessMap", m.metalnessMap],
-          ["emissiveMap",  m.emissiveMap],
-          ["aoMap",        m.aoMap],
-        ];
-
-        console.group(`[Jersey3D] mesh="${mesh.name}" mat="${m.name}" (${m.type})`);
-        console.log(`  color=#${m.color?.getHexString() ?? "?"} roughness=${m.roughness ?? "?"} metalness=${m.metalness ?? "?"}`);
-
-        slots.forEach(([label, tex]) => {
-          if (!tex) {
-            console.log(`  ${label}: MISSING`);
-            return;
-          }
-          const img = tex.image as HTMLImageElement | ImageBitmap | undefined;
-          const w = img ? ("width" in img ? img.width : "?") : "?";
-          const h = img ? ("height" in img ? img.height : "?") : "?";
-          console.log(`  ${label}: ${w}×${h}px  anisotropy=${tex.anisotropy}→${maxAnisotropy}`);
-
-          // Apply max anisotropy for sharper detail at oblique angles
+        [m.map, m.normalMap, m.roughnessMap, m.metalnessMap, m.emissiveMap, m.aoMap].forEach((tex) => {
+          if (!tex) return;
           tex.anisotropy = maxAnisotropy;
           tex.needsUpdate = true;
         });
-
-        console.groupEnd();
       });
     });
   }, [scene, renderer]);
@@ -71,11 +36,6 @@ function JerseyGLB() {
 }
 
 export default function Jersey3D() {
-  useEffect(() => {
-    console.log("[Jersey3D] 3D viewer mounted");
-    console.log("[Jersey3D] GLB loading started: /models/Jersy-3D.glb");
-  }, []);
-
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <Canvas
@@ -119,7 +79,7 @@ export default function Jersey3D() {
           fontWeight: 500,
         }}
       >
-        Arrastra para rotar
+        Drag to rotate
       </div>
     </div>
   );
