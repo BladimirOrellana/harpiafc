@@ -255,6 +255,7 @@ export const translations = {
         "Your Founder Edition will be delivered once production is complete.",
       ],
       viewRegistry: "View Founder Registry",
+      shippingNote: "Your shipping details were collected securely at checkout.",
       backHome: "Back to Home",
     },
     cancel: {
@@ -522,6 +523,7 @@ export const translations = {
         "Tu Edición Fundadores será entregada cuando la producción esté lista.",
       ],
       viewRegistry: "Ver Registro Fundadores",
+      shippingNote: "Tu dirección de envío fue recopilada de forma segura en el pago.",
       backHome: "Volver al inicio",
     },
     cancel: {

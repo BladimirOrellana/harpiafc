@@ -211,6 +211,27 @@ function SuccessInner() {
         </div>
       )}
 
+      {/* Shipping note (full payment only) */}
+      {status === "paid" && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 8,
+            padding: "12px 16px",
+            marginBottom: 24,
+          }}
+        >
+          <span style={{ fontSize: 16, flexShrink: 0 }}>📦</span>
+          <p style={{ fontSize: 13, color: "#888", lineHeight: 1.4 }}>
+            {t.shippingNote}
+          </p>
+        </div>
+      )}
+
       {/* Next steps */}
       <div style={{ marginBottom: 36 }}>
         <p style={{ fontSize: 13, fontWeight: 700, color: "#888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
