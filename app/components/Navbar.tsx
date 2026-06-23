@@ -3,12 +3,19 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
 import { translations } from "../lib/translations";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { lang, setLang } = useLanguage();
+  const { user } = useAuth();
   const t = translations[lang].nav;
+
+  const accountHref = user ? "/account" : "/login";
+  const accountLabel = user
+    ? lang === "es" ? "Cuenta" : "Account"
+    : lang === "es" ? "Entrar" : "Log in";
 
   const links = [
     { label: t.mission, href: "#mision" },
@@ -54,6 +61,13 @@ export default function Navbar() {
               className="px-5 py-2 text-sm font-bold tracking-wider uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-colors"
             >
               {t.founderEdition}
+            </a>
+
+            <a
+              href={accountHref}
+              className="text-sm font-medium text-[#F5F5F5]/70 hover:text-[#C9A84C] transition-colors tracking-wider uppercase"
+            >
+              {accountLabel}
             </a>
 
             {/* Language switcher */}
@@ -141,6 +155,13 @@ export default function Navbar() {
               className="mx-2 px-5 py-2 text-sm font-bold tracking-wider uppercase bg-[#C9A84C] text-[#080808] rounded hover:bg-[#E8C96A] transition-colors text-center"
             >
               {t.founderEdition}
+            </a>
+            <a
+              href={accountHref}
+              onClick={() => setMenuOpen(false)}
+              className="text-sm font-medium text-[#F5F5F5]/70 hover:text-[#C9A84C] transition-colors tracking-wider uppercase px-2"
+            >
+              {accountLabel}
             </a>
           </div>
         )}

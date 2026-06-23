@@ -39,3 +39,55 @@ PASALAPRO_REGISTRY_API_URL=http://localhost:3000/api/harpia/founders/registry
 
 > **Important:** `NEXT_PUBLIC_*` vars are baked into the JS bundle at build time.
 > Changing them in Vercel and redeploying is sufficient — no code change needed.
+
+---
+
+## Authentication (account creation + login)
+
+HarpiaFC has account signup/login/logout and a protected `/account` page.
+PásalaPro remains the **single source of truth** — it owns Firebase auth and the
+MongoDB `User` record. There is **no separate Harpia user database**.
+
+### Architecture — backend proxy + httpOnly cookie
+
+Because HarpiaFC (`harpiafc.com`) and PásalaPro (`pasalapro.com`) are different
+domains, the PásalaPro session cookie cannot be shared. Instead:
+
+```
+Browser → harpiafc.com/api/auth/{signup,login}  (same-origin proxy)
+        → PásalaPro /api/harpia/auth/{signup,login}  (Firebase + Mongo)
+        ← { idToken, refreshToken, expiresIn, user }
+HarpiaFC sets its own httpOnly cookie  →  Set-Cookie: hf_session
+```
+
+- **Firebase stays server-side only.** Firebase tokens live inside the httpOnly
+  `hf_session` cookie and are never exposed to the Harpia browser. No Firebase
+  Client SDK is used in HarpiaFC.
+- `app/api/auth/*` are the HarpiaFC proxy routes; `app/lib/serverAuth.ts` holds
+  the cookie/session helpers (server-only — do not import from client code).
+- `app/context/AuthContext.tsx` is the client auth state; it only ever calls the
+  same-origin `/api/auth/*` routes.
+- `GET /api/auth/me` transparently refreshes an expiring idToken via PásalaPro
+  and re-stores the rotated tokens in the cookie.
+
+### PásalaPro endpoints consumed (added on the backend)
+
+```
+POST /api/harpia/auth/signup   { firstName, lastName, email, password }
+POST /api/harpia/auth/login    { email, password }
+GET  /api/harpia/auth/me       (Authorization: Bearer <idToken>)
+POST /api/harpia/auth/refresh  { refreshToken }
+```
+
+New HarpiaFC accounts are created with `source = "harpiafc"` on the PásalaPro
+`User` model.
+
+### Env vars
+
+No new HarpiaFC env var is required — the auth proxy uses the existing
+`NEXT_PUBLIC_PASALAPRO_API_URL` as its server-side base URL. Optionally,
+`PASALAPRO_API_URL` (server-only) can override the base used by `/api/auth/*`.
+
+On **PásalaPro**, the auth endpoints reuse the existing
+`NEXT_PUBLIC_FIREBASE_API_KEY` (Firebase Web API key) for the Firebase Auth REST
+API, plus the existing `FIREBASE_*` Admin credentials and `MONGODB_URI`.
