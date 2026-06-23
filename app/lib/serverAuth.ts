@@ -131,3 +131,74 @@ export async function fetchProfile(
     return { status: 502, profile: null };
   }
 }
+
+/** Cookie options that immediately expire (clear) the session cookie. */
+export function clearCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: 0,
+  };
+}
+
+/** Low-level authenticated GET to a PasalaPro endpoint. */
+async function pasalaproGet(
+  path: string,
+  idToken: string
+): Promise<{ status: number; data: unknown }> {
+  try {
+    const res = await fetch(`${pasalaproBase()}${path}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${idToken}` },
+      cache: "no-store",
+    });
+    const data = await res.json().catch(() => null);
+    return { status: res.status, data };
+  } catch {
+    return { status: 502, data: null };
+  }
+}
+
+export type AuthedGet =
+  | { kind: "unauth" }
+  | { kind: "ok"; status: number; data: unknown; session: HfSession; rotated: boolean };
+
+/**
+ * Read the hf_session cookie, transparently refresh an expiring/rejected
+ * Firebase idToken, and perform an authenticated GET against PasalaPro.
+ * Mirrors the refresh logic used by /api/auth/me so other protected proxy
+ * routes can reuse it without duplicating token handling.
+ */
+export async function authedGet(
+  cookieValue: string | undefined,
+  path: string
+): Promise<AuthedGet> {
+  const session = decodeSession(cookieValue);
+  if (!session) return { kind: "unauth" };
+
+  let current: HfSession = session;
+  let rotated = false;
+
+  if (Date.now() >= current.expiresAt) {
+    const refreshed = await refreshSession(current.refreshToken);
+    if (!refreshed) return { kind: "unauth" };
+    current = refreshed;
+    rotated = true;
+  }
+
+  let { status, data } = await pasalaproGet(path, current.idToken);
+
+  if (status === 401 && !rotated) {
+    const refreshed = await refreshSession(current.refreshToken);
+    if (!refreshed) return { kind: "unauth" };
+    current = refreshed;
+    rotated = true;
+    ({ status, data } = await pasalaproGet(path, current.idToken));
+  }
+
+  if (status === 401) return { kind: "unauth" };
+
+  return { kind: "ok", status, data, session: current, rotated };
+}
