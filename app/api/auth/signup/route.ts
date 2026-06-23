@@ -18,6 +18,7 @@ export async function POST(req: Request) {
     body = await req.json();
   } catch {
     /* empty body → validation below */
+    /* empty body → validation below */
   }
 
   const { firstName, lastName, email, password } = body as {
