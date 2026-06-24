@@ -8,8 +8,10 @@ import { translations } from "../../lib/translations";
 import {
   getOrderBySession,
   getOrderStatus,
+  updateShipping,
   PublicOrder,
 } from "../../lib/pasalaproApi";
+import { FormEvent } from "react";
 
 const MAX_POLLS = 8;
 const POLL_MS   = 2500;
@@ -211,25 +213,15 @@ function SuccessInner() {
         </div>
       )}
 
-      {/* Shipping note (full payment only) */}
-      {status === "paid" && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: 8,
-            padding: "12px 16px",
-            marginBottom: 24,
-          }}
-        >
-          <span style={{ fontSize: 16, flexShrink: 0 }}>📦</span>
-          <p style={{ fontSize: 13, color: "#888", lineHeight: 1.4 }}>
-            {t.shippingNote}
-          </p>
-        </div>
+      {/* Shipping address — collect / confirm after checkout */}
+      {(status === "paid" || status === "partial") && orderId.current && token.current && (
+        <ShippingSection
+          orderId={orderId.current}
+          token={token.current}
+          initial={order}
+          lang={lang}
+          note={t.shippingNote}
+        />
       )}
 
       {/* Next steps */}
@@ -355,3 +347,211 @@ const linkStyle: React.CSSProperties = {
   textDecoration: "none",
   fontSize: 14,
 };
+
+// ── Shipping address form ─────────────────────────────────────────────────────
+
+const shipInputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "11px 13px",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: 6,
+  color: "#F5F5F5",
+  fontSize: 14,
+  outline: "none",
+  boxSizing: "border-box",
+};
+
+function ShippingSection({
+  orderId,
+  token,
+  initial,
+  lang,
+  note,
+}: {
+  orderId: string;
+  token: string;
+  initial: PublicOrder | null;
+  lang: "en" | "es";
+  note: string;
+}) {
+  const a = initial?.shippingAddress ?? null;
+  const [form, setForm] = useState({
+    shippingName: initial?.shippingName ?? "",
+    shippingPhone: initial?.shippingPhone ?? "",
+    line1: a?.line1 ?? "",
+    line2: a?.line2 ?? "",
+    city: a?.city ?? "",
+    state: a?.state ?? "",
+    postalCode: a?.postalCode ?? "",
+    country: a?.country ?? "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(Boolean(initial?.shippingCollectedAt));
+  const [error, setError] = useState<string | null>(null);
+
+  function set(field: keyof typeof form, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setSaved(false);
+  }
+
+  const c =
+    lang === "es"
+      ? {
+          title: "Dirección de envío",
+          intro: note,
+          name: "Nombre completo",
+          phone: "Teléfono",
+          line1: "Dirección",
+          line2: "Apartamento, suite, etc. (opcional)",
+          city: "Ciudad",
+          state: "Estado / Departamento",
+          postal: "Código postal",
+          country: "País",
+          save: "Guardar dirección",
+          saving: "Guardando…",
+          savedMsg: "✓ Dirección de envío guardada.",
+          generic: "No se pudo guardar la dirección. Inténtalo de nuevo.",
+        }
+      : {
+          title: "Shipping address",
+          intro: note,
+          name: "Full name",
+          phone: "Phone",
+          line1: "Address",
+          line2: "Apartment, suite, etc. (optional)",
+          city: "City",
+          state: "State / Province",
+          postal: "Postal code",
+          country: "Country",
+          save: "Save address",
+          saving: "Saving…",
+          savedMsg: "✓ Shipping address saved.",
+          generic: "Could not save the address. Please try again.",
+        };
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSaving(true);
+    try {
+      await updateShipping(orderId, token, {
+        shippingName: form.shippingName,
+        shippingPhone: form.shippingPhone,
+        shippingAddress: {
+          line1: form.line1,
+          line2: form.line2,
+          city: form.city,
+          state: form.state,
+          postalCode: form.postalCode,
+          country: form.country,
+        },
+      });
+      setSaved(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : c.generic);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const label: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 600,
+    color: "#888",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+    marginBottom: 5,
+    display: "block",
+  };
+
+  return (
+    <form
+      onSubmit={submit}
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 10,
+        padding: "18px 20px",
+        marginBottom: 24,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+        <span style={{ fontSize: 16 }}>📦</span>
+        <p style={{ fontSize: 14, fontWeight: 700, color: "#F5F5F5" }}>{c.title}</p>
+      </div>
+      <p style={{ fontSize: 12, color: "#888", lineHeight: 1.4, marginBottom: 16 }}>{c.intro}</p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div>
+            <label style={label}>{c.name}</label>
+            <input value={form.shippingName} onChange={(e) => set("shippingName", e.target.value)} style={shipInputStyle} />
+          </div>
+          <div>
+            <label style={label}>{c.phone}</label>
+            <input value={form.shippingPhone} onChange={(e) => set("shippingPhone", e.target.value)} style={shipInputStyle} />
+          </div>
+        </div>
+
+        <div>
+          <label style={label}>{c.line1}</label>
+          <input value={form.line1} onChange={(e) => set("line1", e.target.value)} required style={shipInputStyle} />
+        </div>
+        <div>
+          <label style={label}>{c.line2}</label>
+          <input value={form.line2} onChange={(e) => set("line2", e.target.value)} style={shipInputStyle} />
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div>
+            <label style={label}>{c.city}</label>
+            <input value={form.city} onChange={(e) => set("city", e.target.value)} required style={shipInputStyle} />
+          </div>
+          <div>
+            <label style={label}>{c.state}</label>
+            <input value={form.state} onChange={(e) => set("state", e.target.value)} style={shipInputStyle} />
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div>
+            <label style={label}>{c.postal}</label>
+            <input value={form.postalCode} onChange={(e) => set("postalCode", e.target.value)} style={shipInputStyle} />
+          </div>
+          <div>
+            <label style={label}>{c.country}</label>
+            <input value={form.country} onChange={(e) => set("country", e.target.value)} required style={shipInputStyle} />
+          </div>
+        </div>
+      </div>
+
+      {error && (
+        <p style={{ color: "#f87171", fontSize: 13, marginTop: 12 }}>{error}</p>
+      )}
+      {saved && !error && (
+        <p style={{ color: "#0AAFAA", fontSize: 13, marginTop: 12 }}>{c.savedMsg}</p>
+      )}
+
+      <button
+        type="submit"
+        disabled={saving}
+        style={{
+          marginTop: 16,
+          width: "100%",
+          padding: "13px 20px",
+          background: saving ? "rgba(10,175,170,0.4)" : "#0AAFAA",
+          color: "#080808",
+          border: "none",
+          borderRadius: 8,
+          fontWeight: 800,
+          fontSize: 14,
+          letterSpacing: "0.04em",
+          cursor: saving ? "not-allowed" : "pointer",
+        }}
+      >
+        {saving ? c.saving : c.save}
+      </button>
+    </form>
+  );
+}

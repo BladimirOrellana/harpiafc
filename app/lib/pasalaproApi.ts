@@ -58,6 +58,15 @@ export interface CreateCheckoutResult {
   };
 }
 
+export interface ShippingAddress {
+  line1?: string | null;
+  line2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+}
+
 export interface PublicOrder {
   _id: string;
   status: string;
@@ -77,6 +86,26 @@ export interface PublicOrder {
   collection?: string;
   language?: string;
   nextPaymentDueAt?: string | null;
+  shippingName?: string | null;
+  shippingPhone?: string | null;
+  shippingAddress?: ShippingAddress | null;
+  shippingCollectedAt?: string | null;
+}
+
+export interface ShippingInput {
+  shippingName?: string;
+  shippingPhone?: string;
+  shippingAddress?: ShippingAddress;
+}
+
+export interface UpdateShippingResult {
+  ok: true;
+  shipping: {
+    shippingName: string | null;
+    shippingPhone: string | null;
+    shippingAddress: ShippingAddress | null;
+    shippingCollectedAt: string | null;
+  };
 }
 
 export interface OrderBySessionResult {
@@ -164,5 +193,21 @@ export async function getOrderStatus(
 ): Promise<OrderStatusResult> {
   return apiFetch<OrderStatusResult>(
     `/api/harpia/founders/orders/${orderId}/public-status?token=${encodeURIComponent(token)}`
+  );
+}
+
+/**
+ * PATCH /api/harpia/founders/orders/[orderId]/shipping
+ * Saves / updates the shipping address for an order. Authorized with the
+ * order's publicAccessToken. Only non-empty fields are written server-side.
+ */
+export async function updateShipping(
+  orderId: string,
+  token: string,
+  payload: ShippingInput
+): Promise<UpdateShippingResult> {
+  return apiFetch<UpdateShippingResult>(
+    `/api/harpia/founders/orders/${orderId}/shipping`,
+    { method: "PATCH", body: JSON.stringify({ token, ...payload }) }
   );
 }
