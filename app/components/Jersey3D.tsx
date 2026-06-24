@@ -163,7 +163,7 @@ function JerseyGLB({ founderNumber }: { founderNumber?: number | string | null }
   }, [scene, renderer, display]);
 
   return (
-    <Bounds fit clip observe margin={1.2}>
+    <Bounds fit clip observe margin={1.05}>
       <Center>
         <primitive object={scene} />
       </Center>
@@ -177,7 +177,9 @@ export default function Jersey3D({ founderNumber }: { founderNumber?: number | s
       <Canvas
         camera={{ position: [0, 1.2, 4], fov: 35 }}
         gl={{ antialias: true, alpha: true }}
-        dpr={[1, 2]}
+        // Supersample: floor 1.5 sharpens 1x (non-Retina) displays, cap 2.5
+        // keeps cost bounded on high-DPI screens. (was [1, 2])
+        dpr={[1.5, 2.5]}
         style={{ width: "100%", height: "100%" }}
       >
         <ambientLight intensity={0.8} />
