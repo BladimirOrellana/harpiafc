@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import Link from "next/link";
 import { useLanguage } from "../context/LanguageContext";
 import { translations } from "../lib/translations";
@@ -57,6 +57,33 @@ export default function FoundersCheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Next available founder number for the 3D jersey preview. Reuses the same
+  // public registry proxy the registry page uses. Left undefined until loaded so
+  // the viewer shows the "0001" preview fallback; never invents a wrong number.
+  const [nextFounderNumber, setNextFounderNumber] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/fundadores/registry", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (cancelled || !json?.ok) return;
+        // Public numbers start at `publicStart` (#31); each paid founder takes the
+        // next one, so the next available number = publicStart + paid count.
+        // (Equivalent to claimed count + 1 = reserved + paid + 1.)
+        const publicStart = typeof json.publicStart === "number" ? json.publicStart : 31;
+        const paid = typeof json.paid === "number" ? json.paid : 0;
+        const next = publicStart + paid;
+        if (Number.isFinite(next) && next > 0) setNextFounderNumber(next);
+      })
+      .catch(() => {
+        /* keep undefined → viewer uses the 0001 preview fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function set(field: string, value: unknown) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -270,7 +297,8 @@ export default function FoundersCheckoutPage() {
               }}
             />
             <div style={{ position: "relative", width: "100%", height: "100%", zIndex: 1 }}>
-              <Jersey3DViewer />
+              {/* Preview the next available founder number (undefined → "0001" fallback). */}
+              <Jersey3DViewer founderNumber={nextFounderNumber} />
             </div>
           </div>
 
