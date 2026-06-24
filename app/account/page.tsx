@@ -231,7 +231,8 @@ export default function AccountPage() {
               <p className="acct-card-title">{t.jerseyTitle}</p>
               <div className="jersey-stage">
                 <div className="jersey-glow" />
-                <Jersey3DViewer />
+                {/* Real founder number — null (not "0001") when none is assigned. */}
+                <Jersey3DViewer founderNumber={registry?.number ?? null} />
               </div>
               <p className="acct-jersey-sub">{t.jerseySub}</p>
             </section>

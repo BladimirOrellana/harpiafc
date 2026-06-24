@@ -34,6 +34,8 @@ function SuccessInner() {
   const pollCount = useRef(0);
   const orderId   = useRef<string | null>(null);
   const token     = useRef<string | null>(null);
+  // Render-safe copy of orderId/token (refs are only for the async poll closure).
+  const [meta, setMeta] = useState<{ orderId: string; token: string } | null>(null);
 
   useEffect(() => {
     if (!sessionId) {
@@ -52,6 +54,7 @@ function SuccessInner() {
 
         orderId.current = bySession.order._id;
         token.current   = bySession.order.publicAccessToken;
+        setMeta({ orderId: bySession.order._id, token: bySession.order.publicAccessToken });
 
         // Persist to sessionStorage so cancel page can use them
         sessionStorage.setItem("harpiafc_order_id",    bySession.order._id);
@@ -214,10 +217,10 @@ function SuccessInner() {
       )}
 
       {/* Shipping address — collect / confirm after checkout */}
-      {(status === "paid" || status === "partial") && orderId.current && token.current && (
+      {(status === "paid" || status === "partial") && meta && (
         <ShippingSection
-          orderId={orderId.current}
-          token={token.current}
+          orderId={meta.orderId}
+          token={meta.token}
           initial={order}
           lang={lang}
           note={t.shippingNote}

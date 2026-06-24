@@ -121,11 +121,19 @@ const Jersey3DCanvas = dynamic(() => import("./Jersey3D"), {
 });
 
 // ─── Public export ─────────────────────────────────────────────────────────
-export default function Jersey3DViewer() {
+// founderNumber: the Founder Edition number to render on the patch.
+//   - undefined → preview/demo default ("0001")
+//   - null / "" → blank number (real account with no assigned number)
+//   - number/string → formatted (e.g. 25 → "0025")
+export default function Jersey3DViewer({
+  founderNumber,
+}: {
+  founderNumber?: number | string | null;
+}) {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <WebGLErrorBoundary>
-        <Jersey3DCanvas />
+        <Jersey3DCanvas founderNumber={founderNumber} />
       </WebGLErrorBoundary>
     </div>
   );
